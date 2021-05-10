@@ -1,18 +1,20 @@
 import React, {useState, useEffect} from 'react';
+import Navbar from '../../molecules/Navbar';
 import firebase from '../../../config/Firebase';
 
 const Dashboard = () => {
 
-    const [productName, setProductName] = useState("");
-    const [category, setCategory] = useState("");
-    const [price, setPrice] = useState("");
-    const [product, setProduct] = useState([]);
+    const [fullName, setFullName] = useState("");
+    const [age, setAge] = useState("");
+    const [address, setAddress] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [users, setUsers] = useState([]);
     const [button, setButton] = useState("Save");
-    const [selectedProduct, setSelectedProduct] = useState({});
+    const [selectedUsers, setSelectedUsers] = useState({});
 
     useEffect(() => {
         firebase.database()
-        .ref("products")
+        .ref("adminUsers")
         .on("value", (res) => {
            if(res.val()){
                //Ubah menjadi array object
@@ -24,62 +26,69 @@ const Dashboard = () => {
                        ...rawData[item],
                    });
                });
-               setProduct(productArr);
+               setUsers(productArr);
            }
         });
     }, []);
 
     const resetForm = () => {
-        setProductName("");
-        setCategory("");
-        setPrice("");
+        setFullName("");
+        setAge("");
+        setAddress("");
+        setPhoneNumber("");
         setButton("Save");
-        setSelectedProduct({});
+        setSelectedUsers({});
     };
 
     const onSubmit = () => {
         const data = {
-            productName: productName,
-            category: category,
-            price: price,
+            fullName: fullName,
+            age: age,
+            address: address,
+            phoneNumber: phoneNumber,
         };
         if(button === 'Save'){
             //Insert
             firebase.database()
-            .ref('products')
+            .ref('adminUsers')
             .push(data);
         } else {
             //Update
-            firebase.database().ref(`products/${selectedProduct.id}`).set(data);
+            firebase.database().ref(`adminUsers/${selectedUsers.id}`).set(data);
         }
        resetForm();
     };
 
     const onUpdateData = (item) => {
-        setProductName(item.productName);
-        setCategory(item.category);
-        setPrice(item.price);
+        setFullName(item.fullName);
+        setAge(item.age);
+        setAddress(item.address);
+        setPhoneNumber(item.phoneNumber);
         setButton("Update");
-        setSelectedProduct(item);
+        setSelectedUsers(item);
     };
 
     const onDeleteData = (item) => {
         //delete
         firebase.database()
-        .ref(`products/${item.id}`)
+        .ref(`adminUsers/${item.id}`)
         .remove();
     };
 
     return (
-        <div className="container mt-5">
-            <h3>Dashboard</h3>
-            <div className="col-5">
-             <p className="mt-2">Product Name</p>
-             <input className="form-control" placeholder="Type the product name" value={productName} onChange={(e) => setProductName(e.target.value)} /> 
-             <p className="mt-2">Category</p>
-             <input className="form-control" placeholder="Type the category" value={category} onChange={(e) => setCategory(e.target.value)} />
-             <p className="mt-2">Price</p>
-             <input className="form-control" placeholder="Type the price" value={price} onChange={(e) => setPrice(e.target.value)} />
+        <div>
+            <Navbar />
+        <div className="container mt-4">
+            <h3>Dashboard Admin</h3>
+            <div className="col-4">
+             <p className="mt-2">FullName</p>
+             <input className="form-control" placeholder="Type your fullname" value={fullName} onChange={(e) => setFullName(e.target.value)} /> 
+             <p className="mt-2">Age</p>
+             <input className="form-control" placeholder="Type your age" value={age} onChange={(e) => setAge(e.target.value)} />
+             <p className="mt-2">Address</p>
+             <input className="form-control" placeholder="Type your address" value={address} onChange={(e) => setAddress(e.target.value)} />
+             <p className="mt-2">Phone</p>
+             <input className="form-control" placeholder="Type your phone number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
              <br/>
              <button className="btn btn-primary text-dark" onClick={onSubmit}>{button}</button>
             {button === "Update" && (
@@ -90,18 +99,20 @@ const Dashboard = () => {
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Product Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
+                        <th>FullName</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                        <th>Phone</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {product.map((item) => (
+                    {users.map((item) => (
                         <tr key={item.id}>
-                            <td>{item.productName}</td>
-                            <td>{item.category}</td>
-                            <td>{item.price}</td>
+                            <td>{item.fullName}</td>
+                            <td>{item.age}</td>
+                            <td>{item.address}</td>
+                            <td>{item.phoneNumber}</td>
                             <td>
                                 <button className="btn btn-success" onClick={() => onUpdateData(item)}>Update</button>
                                 <button className="btn btn-danger" onClick={() => onDeleteData(item)}>Delete</button>
@@ -109,8 +120,8 @@ const Dashboard = () => {
                         </tr>
                     ))}
                 </tbody>
-            </table>
-           
+            </table>  
+        </div>
         </div>
     );
 };

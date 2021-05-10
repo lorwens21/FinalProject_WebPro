@@ -1,4 +1,5 @@
 import React, { useState, useEffect }from "react";
+import Navbar from '../../molecules/Navbar';
 import firebase from '../../../config/Firebase';
 import { useHistory } from 'react-router-dom';
 
@@ -37,20 +38,24 @@ const Login = () => {
 
     console.log("render component");
 
-  return (
-   <div className="container mt-5">
-     <h1>Welcome</h1>
-     <h3 className="mt-5" >Login</h3>
-     <div className="col-5">
-     <p className="mt-5">Email</p>
-     <input className="form-control" placeholder="Masukan email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-     <p className="mt-4">Password</p>
-     <input className="form-control" placeholder="Masukkan password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-     </div>
-     <br></br>
-     <br></br>
-     <button type="button" onClick={onsubmit} className="btn btn-danger btn-sm">Submit</button>
+  return ( 
+   <div>
+       <Navbar />
+       <div className="container mt-5">
+            <h1>Welcome</h1>
+            <h3 className="mt-5" >Login</h3>
+            <div className="col-4">
+            <p className="mt-5">Email</p>
+            <input className="form-control" placeholder="Masukan email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <p className="mt-4">Password</p>
+            <input className="form-control" placeholder="Masukkan password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            </div>
+            <br></br>
+            <br></br>
+            <button type="button" onClick={onsubmit} className="btn btn-danger btn-sm">Submit</button>
+       </div>
    </div>
+   
    );
 };
 
